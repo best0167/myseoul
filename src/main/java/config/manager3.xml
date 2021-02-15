@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+ <mapper namespace="m3">
+	<select resultType="String" id="find_id"> 
+		select u_id from users where u_email=#{u_email} 
+	</select>
+
+	<select resultType="String" id="find_pw" parameterType="dto.UsersDTO">
+		select u_pw from users where u_id=#{u_id} and u_email=#{u_email} and u_phone=#{u_phone} 
+	</select>
+ 	
+ 	<!-- 회원정보 상세조회 -->
+ 	<select id="view_user" parameterType="String" resultType="dto.UsersDTO">
+ 		<![CDATA[
+ 		select *
+ 		from users
+ 		where u_id = #{u_id}
+ 		]]>
+ 	</select>
+ 	 	
+ 	<!-- 회원정보 수정 -->
+ 	<update id="update_user" parameterType="dto.UsersDTO">
+ 		update users
+ 		set u_name = #{u_name},
+ 			u_pw = #{u_pw},
+ 			u_gender = #{u_gender},
+ 			u_phone = #{u_phone},
+ 			u_email = #{u_email},
+ 			u_birth = #{u_birth},
+ 			u_nation = #{u_nation}
+ 		where u_id = #{u_id}
+ 	</update>
+ 	
+    <!-- 회원정보 삭제 처리 -->
+    <delete id="delete_user">
+    	delete from users
+    	where u_id = #{u_id}
+    </delete>
+    
+    <!-- 비밀번호 체크 -->
+    <select id="checkPW" resultType="int">
+    	<![CDATA[
+    	select count(*)
+    	from users
+    	where u_id = #{u_id} and u_pw = #{u_pw}
+    	]]>
+    </select>
+    
+    
+     <!-- 아이디로 비밀번호 찾기 -->
+    <select id="find_pw_id" parameterType="String" resultType="String">
+    	select u_pw
+    	from users
+    	where u_id=#{u_id}
+    </select>
+    
+    <!-- 이메일로 비밀번호 찾기 -->
+    <select id="find_pw_email" parameterType="String" resultType="String">
+    	select u_pw
+    	from users
+    	where u_email=#{u_email}
+    </select>
+    
+    <!-- 전화번호로 비밀번호 찾기 -->
+    <select id="find_pw_phone" parameterType="String" resultType="String">
+    	select u_pw
+    	from users
+    	where u_phone=#{u_phone}
+    </select>
+    
+    <!-- 집등록관리 허가목록 수 -->
+    <select id="permit_count" parameterType="dto.permitHousePageDTO" resultType="int">
+	<![CDATA[ select count(*) from (select * from house where h_permit='y') ]]>
+        <if test='searchKey!=null'>
+            <if test='h_gender=="a"'>
+               <if test='h_type==6'>
+                  <if test='h_region=="all"'>
+                     <if test='searchKey=="h_name"'>
+                        <where>
+                           lower(h_name) like '%' || lower(#{searchWord}) || '%'
+                        </where>
+                     </if>
+                  </if>
+                  <if test='h_region!="all"'>
+                     <if test='searchKey=="h_name"'>
+                        <where>
+                           lower(h_name) like '%' || lower(#{searchWord}) || '%' AND h_region=#{h_region}
+                        </where>
+                     </if>
+                  </if>
+               </if>
+               <if test='h_type!=6'>
+                  <if test='h_region=="all"'>
+                     <if test='searchKey=="h_name"'>
+                        <where>
+                           lower(h_name) like '%' || lower(#{searchWord}) || '%' AND h_type=#{h_type}
+                        </where>
+                     </if>
+                  </if>
+                  <if test='h_region!="all"'>
+                     <if test='searchKey=="h_name"'>
+                        <where>
+                           lower(h_name) like '%' || lower(#{searchWord}) || '%' AND h_type=#{h_type} AND h_region=#{h_region}
+                        </where>
+                     </if>
+                  </if>
+               </if>
+            </if>   
+            <if test='h_gender!="a"'>
+               <if test='h_type==6'>
+                  <if test='h_region=="all"'>
+                     <if test='searchKey=="h_name"'>
+                        <where>
+                           lower(h_name) like '%' || lower(#{searchWord}) || '%' AND h_gender=#{h_gender}
+                        </where>
+                     </if>
+                  </if>
+                  <if test='h_region!="all"'>
+                     <if test='searchKey=="h_name"'>
+                        <where>
+                           lower(h_name) like '%' || lower(#{searchWord}) || '%' AND h_gender=#{h_gender} AND h_region=#{h_region}
+                        </where>
+                     </if>
+                  </if>
+               </if>
+               <if test='h_type!=6'>
+                  <if test='h_region=="all"'>
+                     <if test='searchKey=="h_name"'>
+                        <where>
+                           lower(h_name) like '%' || lower(#{searchWord}) || '%'AND h_gender=#{h_gender} AND h_type=#{h_type}
+                        </where>
+                     </if>
+                  </if>
+                  <if test='h_region!="all"'>
+                     <if test='searchKey=="h_name"'>
+                        <where>
+                           lower(h_name) like '%' || lower(#{searchWord}) || '%'AND h_gender=#{h_gender} AND h_type=#{h_type} AND h_region=#{h_region}
+                        </where>
+                     </if>
+                  </if>
+               </if>            
+            </if>   
+         </if>
+      
+   </select>
+	
+	<!-- 집등록관리 허가목록 페이징 -->
+    <select resultType="dto.HouseDTO" parameterType="dto.permitHousePageDTO" id="permit_list">
+	<![CDATA[
+      select b.*
+      from (select rownum as rm, a.*
+         from (select c.* from (
+            select *
+                from house 
+        ]]>
+           <if test='searchKey!=null'>
+            <if test='h_gender=="a"'>
+               <if test='h_type==6'>
+                  <if test='h_region=="all"'>
+                     <if test='searchKey=="h_name"'>
+                        <where>
+                           lower(h_name) like '%' || lower(#{searchWord}) || '%'
+                        </where>
+                     </if>
+                  </if>
+                  <if test='h_region!="all"'>
+                     <if test='searchKey=="h_name"'>
+                        <where>
+                           lower(h_name) like '%' || lower(#{searchWord}) || '%' AND h_region=#{h_region} 
+                        </where>
+                     </if>
+                  </if>
+               </if>
+               <if test='h_type!=6'>
+                  <if test='h_region=="all"'>
+                     <if test='searchKey=="h_name"'>
+                        <where>
+                           lower(h_name) like '%' || lower(#{searchWord}) || '%' AND h_type=#{h_type}
+                        </where>
+                     </if>
+                  </if>
+                  <if test='h_region!="all"'>
+                     <if test='searchKey=="h_name"'>
+                        <where>
+                           lower(h_name) like '%' || lower(#{searchWord}) || '%' AND h_type=#{h_type} AND h_region=#{h_region}
+                        </where>
+                     </if>
+                  </if>
+               </if>
+            </if>   
+            <if test='h_gender!="a"'>
+               <if test='h_type==6'>
+                  <if test='h_region=="all"'>
+                     <if test='searchKey=="h_name"'>
+                        <where>
+                           lower(h_name) like '%' || lower(#{searchWord}) || '%' AND h_gender=#{h_gender}
+                        </where>
+                     </if>
+                  </if>
+                  <if test='h_region!="all"'>
+                     <if test='searchKey=="h_name"'>
+                        <where>
+                           lower(h_name) like '%' || lower(#{searchWord}) || '%' AND h_gender=#{h_gender} AND h_region=#{h_region}
+                        </where>
+                     </if>
+                  </if>
+               </if>
+               <if test='h_type!=6'>
+                  <if test='h_region=="all"'>
+                     <if test='searchKey=="h_name"'>
+                        <where>
+                           lower(h_name) like '%' || lower(#{searchWord}) || '%'AND h_gender=#{h_gender} AND h_type=#{h_type}
+                        </where>
+                     </if>
+                  </if>
+                  <if test='h_region!="all"'>
+                     <if test='searchKey=="h_name"'>
+                        <where>
+                           lower(h_name) like '%' || lower(#{searchWord}) || '%'AND h_gender=#{h_gender} AND h_type=#{h_type} AND h_region=#{h_region}
+                        </where>
+                     </if>
+                  </if>
+               </if>            
+            </if>   
+         </if>         
+               
+         <![CDATA[
+          )c where h_permit='y'  order by h_permitdate desc ) a)b
+         where b.rm>=#{startRow, jdbcType=VARCHAR} and b.rm<=#{endRow,  jdbcType=VARCHAR}
+         ]]>
+         
+	</select>	
+	<!-- 집등록허가 취소 -->
+	<update id="cancelpermitEnroll" parameterType="int">
+        update house 
+        set h_permit = 'n' 
+        where h_num = #{h_num}
+    </update>
+    
+    <!-- 이메일 중복 체크 -->
+	<select resultType="int" id="emailChk"> 
+		select count(*) from users where u_email = #{u_email} 
+	</select>
+    
+       <!-- 관리자페이지 매출현황 불러오기 -->
+   <select id="select_adminSaleList" parameterType="dto.SellListPageDTO" resultType="dto.BuyListDTO">
+      <![CDATA[
+      select b.*
+      from (select rownum as rm, a.*
+         from ( select * from buylist
+      ]]>
+      <if test='searchKey!="all"'>
+         <if test='searchKey=="day"'>
+            <where>
+               "BY_REGDATE" between to_date(#{date}, 'YYYY-MM-DD') and TO_DATE(#{date} || '23:59:59','YYYY-MM-DD HH24:MI:SS')
+            </where>
+         </if>
+         <if test='searchKey=="month"'>
+            <where>
+               "BY_REGDATE" BETWEEN TO_DATE('2020-'||#{searchKey3}||'-01','YYYY-MM-DD') AND TO_DATE('2020-'||${searchKey3+1}||'-01','YYYY-MM-DD') 
+            </where>
+         </if>
+      </if>
+      <![CDATA[
+          order by by_regdate desc)a)b
+      where b.rm>=#{startRow, jdbcType=VARCHAR} and b.rm<=#{endRow,  jdbcType=VARCHAR}
+      ]]>
+   </select>
+
+    <!-- 관리자페이지 매출현황 수 -->
+    <select id="select_adminSale_count" resultType="int" parameterType="dto.BuyListDTO">
+      select count(*) from buyList
+      <if test='searchKey!="all"'>
+         <if test='searchKey=="day"'>
+            <where>
+               "BY_REGDATE" between to_date(#{date}, 'YYYY-MM-DD') and TO_DATE(#{date} || '23:59:59','YYYY-MM-DD HH24:MI:SS')
+            </where>
+         </if>
+         <if test='searchKey=="month"'>
+            <where>
+               "BY_REGDATE" BETWEEN TO_DATE('2020-'||#{searchKey3}||'-01','YYYY-MM-DD') AND TO_DATE('2020-'||${searchKey3+1}||'-01','YYYY-MM-DD') 
+            </where>
+         </if>
+      </if>
+    </select>
+    
+ </mapper>

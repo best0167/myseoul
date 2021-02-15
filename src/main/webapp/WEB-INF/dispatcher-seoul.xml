@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.3.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+
+    <mvc:annotation-driven></mvc:annotation-driven>
+	<task:annotation-driven/>
+	
+	<!-- [*] Tiles.xml 빈 선언 -->
+	<bean class="org.springframework.web.servlet.view.tiles3.TilesConfigurer">
+        <property name="definitions">
+            <list>
+                <value>/WEB-INF/tiles.xml</value>
+            </list>
+        </property>
+    </bean>
+    
+    <!-- [*] Tiles View 빈 선언 -->
+	<bean class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+       <property name="viewClass" value="org.springframework.web.servlet.view.tiles3.TilesView" />
+       <property name="order" value="1" />
+    </bean>
+	    
+    <!-- [1] DataSource 빈 선언 -->
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource" >
+        <!-- 로컬테스트용 -->
+        <!-- 
+        <property name="driverClassName" value="oracle.jdbc.OracleDriver" />
+        <property name="url" value="jdbc:oracle:thin://@127.0.0.1:1521:xe" />
+        <property name="username" value="hr" />
+        <property name="password" value="hr" />
+         -->
+         
+        <!-- 통합서버용 --> 
+        <property name="driverClassName" value="oracle.jdbc.OracleDriver" />
+        <property name="url" value="jdbc:oracle:thin://@172.16.5.5:1521:xe" />
+        <property name="username" value="sm" />
+        <property name="password" value="oracle4U" />
+        
+    </bean>
+    
+    
+    <!-- [2] SqlSessionFactoryBean 빈 선언 -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name = "dataSource" ref="dataSource" />
+        <property name = "mapperLocations">
+            <list>
+                <value>classpath:config/seoulMapper.xml</value>
+                <value>classpath:config/manager1.xml</value>
+                <value>classpath:config/manager2.xml</value>
+                <value>classpath:config/manager3.xml</value>
+                <value>classpath:config/manager4.xml</value>
+                <value>classpath:config/manager5.xml</value>
+                <value>classpath:config/manager6.xml</value>
+            </list>
+        </property>
+    </bean>
+    
+    <!-- [3] SqlSessionTemplate 빈 선언 -->
+    <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg ref="sqlSessionFactory" />
+    </bean>                              
+    
+    <!-- [5] DaoImp 빈 선언  -->
+    <bean id="dao" class="dao.SeoulDaoImp">
+        <property name="sqlSession" ref="sqlSession" />
+    </bean>
+    <bean id="man1Dao" class="dao.manager1DaoImp">
+        <property name="sqlSession" ref="sqlSession" />
+    </bean>
+    <bean id="man2Dao" class="dao.manager2DaoImp">
+        <property name="sqlSession" ref="sqlSession" />
+    </bean>
+    <bean id="man3Dao" class="dao.manager3DaoImp">
+        <property name="sqlSession" ref="sqlSession" />
+    </bean>
+    <bean id="man4Dao" class="dao.manager4DaoImp">
+        <property name="sqlSession" ref="sqlSession" />
+    </bean>
+    <bean id="man5Dao" class="dao.manager5DaoImp">
+        <property name="sqlSession" ref="sqlSession" />
+    </bean>
+    <bean id="man6Dao" class="dao.manager6DaoImp">
+        <property name="sqlSession" ref="sqlSession" />
+    </bean>
+    
+    <!-- [6] ServiceImp 빈 선언 -->
+    <bean id="fileUploadService" class="service.FileUploadService" />
+    <bean id="man1Service" class="service.manager1ServiceImp">
+        <property name="man1Dao" ref="man1Dao" />
+    </bean>
+    <bean id="man2Service" class="service.manager2ServiceImp">
+        <property name="man2Dao" ref="man2Dao" />
+    </bean>
+    <bean id="userService" class="service.UsersServiceImp">
+ 		<property name="dao" ref="dao" />
+ 		<property name="dao3" ref="man3Dao" />
+	</bean>
+    <bean id="service4" class="service.manager4ServiceImp">
+		<property name="dao" ref="man4Dao" />
+	</bean>
+	    <bean id="man5service" class="service.manager5ServiceImp">
+      <property name="dao" ref="man5Dao"/>
+    </bean>
+	<bean id="man6Service" class="service.manager6ServiceImp">
+        <property name="man6Dao" ref="man6Dao" />
+    </bean>
+    
+    <!-- [7]  TransactionManager 빈 선언 -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<!-- [8] 선언적 트랜잭션:<tx:advice>태그, aop를 이용한 트랜잭션 처리 -->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="*Update" rollback-for="java.lang.Exception" />
+			<tx:method name="*Insert" rollback-for="java.lang.Exception" />
+			<tx:method name="*Process" rollback-for="java.lang.Exception"/>
+		</tx:attributes>
+	</tx:advice>		
+	<aop:config>  
+		<aop:pointcut expression="execution(* service.manager4Service.*Update(..))" id="update"/>
+		<aop:pointcut expression="execution(* service.manager4Service.*Insert(..))" id="insert"/>
+		<aop:pointcut expression="execution(* service.manager4Service.*Delete(..))" id="delete"/>
+		<aop:pointcut expression="execution(* service.manager2Service.*Process(..))" id="aa"/>
+		
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="update" />
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="insert" />
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="delete" />
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="aa"/>
+	</aop:config>
+    
+    <!-- [김우진] 다운로드 뷰 빈 선언 -->
+    <bean id="download" class="view.QnaDownLoadView">
+        <property name="man2Dao" ref="man2Dao" />
+    </bean>
+    <bean id="download2" class="view.NoticeDownLoadView">
+        <property name="man2Dao" ref="man2Dao" />
+    </bean>
+    <bean class="org.springframework.web.servlet.view.BeanNameViewResolver">
+	    <property name="order" value="1"/>
+	</bean>
+    <!-- [김우진] 다운로드 뷰 빈 선언-->
+    
+    <!-- [7] Controller 빈 선언-->
+    <bean id="seoulController" class="controller.seoulController">
+        <property name="dao" ref="dao" />
+        <property name="userService" ref="userService" />
+    </bean>
+   
+    <bean id="manager1" class="controller.manager1Controller">
+        <property name="man1Dao" ref="man1Dao" />
+        <property name="man1Service" ref="man1Service" />
+        <property name="fileUploadService" ref="fileUploadService"/>
+    </bean>
+
+    <bean id="manager2" class="controller.manager2Controller">
+        <property name="man2Service" ref="man2Service" />
+    </bean>
+    
+    <bean id="manager3" class="controller.manager3Controller">
+        <property name="service3" ref="userService" />
+    </bean>
+    
+    <bean id="manager4" class="controller.manager4Controller">
+        <property name="service" ref="service4"/>
+    </bean>
+    
+    <bean id="manager5" class="controller.manager5Controller">
+    	<property name="service" ref="man5service"/>
+    </bean>
+    <bean id="manager6" class="controller.manager6Controller">
+        <property name="man6Service" ref="man6Service" />
+    </bean>
+
+  
+    <!-- [*] 파일업로드 시작 -->
+        <!-- 첨부파일의 임시기억장치 경로 설정 -->
+        <bean id="uploadDirResource" class="org.springframework.core.io.FileSystemResource">
+            <constructor-arg value="./src/main/webapp/files/" />
+        </bean>
+        
+        <!-- multipartResolver빈 선언 -->
+        <bean id="multipartResolver" 
+                  class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+             <property name="uploadTempDir" ref="uploadDirResource" />
+             <property name="maxUploadSize" value="1000000000" />
+             <property name="defaultEncoding" value="utf-8" />
+        </bean>
+    <!-- [*] 파일업로드 끝 -->
+
+    
+    <!-- ViewResolver -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/view/" />
+		<property name="suffix" value=".jsp" />
+		<property name="order" value="2" />
+	</bean>
+</beans>

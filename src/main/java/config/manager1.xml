@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+ <mapper namespace="m1">
+    
+    <select id="hType" parameterType="String" resultType="dto.HouseTypeDTO">
+        select * 
+        from category
+    </select>
+    
+    <select id="userGnum" parameterType="String" resultType="int">
+        select u_grade 
+        from users 
+        where u_id=#{u_id}
+    </select>
+    
+    <select id="gradeName" parameterType="int" resultType="String">
+        select g_name 
+        from grade 
+        where g_grade=#{g_num}
+    </select>
+    
+    <insert id="insHouse" parameterType="dto.HouseDTO">
+        insert into house(h_num,h_type,h_uid,h_name,h_roadaddr,h_detailaddr,h_limit, 
+            h_startdate,h_enddate,h_rooms,h_bath,h_area,h_price,h_regdate,h_contents, 
+            h_region,h_readcnt,h_stars,h_permit,h_gender) 
+        values(#{h_num},#{h_type},#{h_uid},#{h_name},#{h_roadaddr},#{h_detailaddr},
+            #{h_limit},#{h_startdate},#{h_enddate},#{h_rooms},#{h_bath},#{h_area},#{h_price},default,
+            #{h_contents},#{h_region},default,default,default,#{h_gender})
+    </insert>
+    
+    <select id="seqHouse" resultType="int">
+        select house_seq.nextval from dual
+    </select>
+    
+    <insert id="insHousePics" parameterType="dto.HousePicsDTO">
+        insert into housepics(hp_num, hp_hnum, hp_dir) 
+        values(housepics_seq.nextval,#{hp_hnum},#{hp_dir})
+    </insert>
+    
+    <select id="regionList" parameterType="String" resultType="dto.HouseDTO">
+        select * 
+        from house 
+        where h_permit='y' and h_region=#{region}
+    </select>
+    
+    <select id="seqRoom" resultType="int">
+        select room_seq.nextval from dual
+    </select>
+    
+    <insert id="insRoom" parameterType="dto.RoomDTO">
+        insert into room(r_num, r_hnum, r_name, r_area, r_bath, r_price, r_state, r_startdate, r_enddate, r_pid,r_tstate) 
+        values(#{r_num}, #{r_hnum}, #{r_name}, #{r_area}, #{r_bath}, #{r_price}, default,  
+            #{r_startdate}, #{r_enddate}, #{r_pid}, default)
+    </insert>
+    
+    <insert id="insRoomPics" parameterType="dto.RoomPicsDTO">
+        insert into roompics(rp_num, rp_hnum, rp_rnum, rp_dir) 
+        values(roompics_seq.nextval,#{rp_hnum},#{rp_rnum},#{rp_dir})
+    </insert>
+    
+    <select id="adminName" parameterType="String" resultType="String">
+        select u_name 
+        from users 
+        where u_id = #{u_id}
+    </select>
+    
+    <select id="newQuestion" resultType="int">
+        select count(*) 
+        from (select q_ref,count(q_ref) as newqna 
+        		from qna 
+        		group by q_ref) 
+        where newqna = 1
+    </select>
+    
+    <select id="totalHouse" resultType="int">
+        select count(*) 
+        from house 
+        where h_permit = 'y'
+    </select>
+    
+    <select id="totalSeller" resultType="int">
+        select count(*) 
+        from users 
+        where u_grade=1
+    </select>
+    
+    <select id="totalBuyer" resultType="int">
+        select count(*) 
+        from users 
+        where u_grade=0
+    </select>
+    
+    <select id="waitSeller" resultType="int">
+        select count(*) 
+        from wating 
+        where w_permit = 'n'
+    </select>
+    
+    <select id="waitEnroll" resultType="int">
+        select count(*) 
+        from house 
+        where h_permit = 'n'
+    </select>
+    
+    <select id="waitRefund" resultType="int">
+        select count(*) 
+        from refund 
+        where rf_prog = 'n'
+    </select>
+
+    <select id="waitEnrollList" resultType="dto.HouseDTO">
+        select h_num, h_type, h_uid, h_name, h_regdate 
+        from house 
+        where h_permit = 'n' 
+        order by h_regdate desc
+    </select>
+    
+    <update id="permitEnroll" parameterType="int">
+        update house 
+        set h_permit = 'y' , h_permitdate=sysdate 
+        where h_num = #{h_num}
+    </update>
+    
+<!-- resultMap 관리자의 유저정보 관리 정보 -->
+    <resultMap id="waitSeller" type="dto.WatingUserDTO">
+        <result property="id" column="u_id" />
+        <result property="nation" column="u_nation" />
+        <result property="name" column="u_name" />
+        <result property="phone" column="u_phone" />
+        <result property="gender" column="u_gender" />
+        <result property="sellnum" column="w_sellnum" />
+        <result property="regdate" column="w_regdate" />
+        <result property="corpor" column="w_sellname" />
+        <result property="ceo" column="w_leader" />        
+    </resultMap>
+<!-- resultMap -->
+    
+    <select id="waitSellerList" resultMap="waitSeller">
+        select U.u_id, U.u_nation, U.u_name, U.u_phone, U.u_gender, W.w_sellnum, W.w_regdate,  W.w_sellname, W.w_leader 
+        from users U join wating W 
+        on U.u_id = W.w_uid 
+        where W.W_PERMIT = 'n' 
+        order by W.w_regdate desc
+    </select>
+    
+    <update id="permitSeller" parameterType="String">
+        update users 
+        set u_grade = 1 
+        where u_id = #{u_id}
+    </update>
+    
+    <update id="permitSeller2" parameterType="String">
+        update wating 
+        set w_cdate = sysdate, 
+        w_permit = 'y' 
+        where w_uid = #{u_id}
+    </update>
+    
+    <select id="checkWating" parameterType="String" resultType="int">
+    	select count(*) 
+    	from wating 
+    	where w_uid = #{u_id}
+    </select>
+    
+    <select id="callMainPic" parameterType="int" resultType="String">
+    	select hp_dir 
+    	from housepics 
+    	where hp_hnum = #{h_num} and rownum = 1 
+    	order by hp_num asc
+    </select>
+    
+    <insert id="insWating" parameterType="dto.WatingDTO">
+    	insert into wating(w_num, w_uid, w_sellnum, w_regdate, w_permit, w_selldate, w_sellname, w_leader) 
+    	values(wating_seq.nextval,#{w_uid},#{w_sellnum},default,default,#{w_selldate},#{w_sellname},#{w_leader})
+    </insert>
+    
+    <select id="starLank" resultType="dto.HouseDTO">
+    	<![CDATA[
+    	select h_num, h_name, h_stars, h_type, h_region,h_gender  
+    	from (select * 
+    			from house 
+    			where h_permit = 'y' 
+    			order by h_stars desc) 
+    	where rownum < 5
+    	]]>
+    </select>
+    
+    <select id="readLank" resultType="dto.HouseDTO">
+    	<![CDATA[
+    	select h_num, h_name, h_readcnt, h_type, h_region,h_gender   
+    	from (select * 
+    			from house 
+    			where h_permit = 'y' 
+    			order by h_readcnt desc) 
+    	where rownum < 5
+    	]]>
+    </select>
+    
+    <select id="regLank" resultType="dto.HouseDTO">
+    	<![CDATA[
+    	select h_num, h_name, h_regdate, h_type, h_region,h_gender 
+    	from (select * 
+    			from house 
+    			where h_permit = 'y' 
+    			order by h_regdate desc) 
+    	where rownum < 5
+    	]]>
+    </select>
+    
+	<select id="countryCnt" parameterType="String" resultType="int">
+		select count(*) 
+		from users 
+		where u_grade != 2 and u_nation=#{u_nation}
+	</select>
+	
+	<select id="countryCntAll" resultType="int">
+		select count(*) 
+		from users 
+		where u_grade != 2
+	</select>
+	
+    <select id="userCnt" resultType="int">
+    	<![CDATA[
+    	SELECT count(*) 
+    	FROM users 
+    	WHERE u_grade !=2 AND TO_CHAR(u_regdate,'YYYY/MM/DD') = TO_CHAR(sysdate,'YYYY/MM/DD')
+    	]]>
+    </select>
+    
+    <select id="userCntAll" resultType="int">
+    	<![CDATA[
+    	SELECT count(*) 
+    	FROM users 
+    	WHERE u_grade !=2 AND TO_CHAR(u_regdate,'YYYY/MM/DD') <= TO_CHAR(sysdate-1,'YYYY/MM/DD')
+    	]]>
+    </select>
+    
+    <select id="visitorCnt" resultType="int">
+    	<![CDATA[
+    		select count(*) from acc 
+    		where TO_CHAR(TO_DATE(acc_time,'YYYY/MM/DD/HH24:MI:SS'),'YYYY/MM/DD') = TO_CHAR(sysdate,'YYYY/MM/DD')
+    	]]>
+    </select>
+    
+    <select id="visitorCntAll" resultType="int">
+    	<![CDATA[
+    		select count(*) from acc 
+    		where TO_CHAR(TO_DATE(acc_time,'YYYY/MM/DD/HH24:MI:SS'),'YYYY/MM/DD') <= TO_CHAR(sysdate-1,'YYYY/MM/DD')
+    	]]>
+    </select>
+    
+    <update id="upVisitor" parameterType="hashmap">
+    	update acc 
+        set acc_uid = #{acc_uid} 
+        where acc_session = #{acc_session}
+    </update>
+    
+<!-- 0318 TEST -->    
+    <select id="myHostingList" parameterType="String" resultType="dto.HouseDTO">
+    	select h_num, h_type, h_name, h_rooms, h_startdate, h_enddate, h_regdate, h_permit, h_permitdate
+    	from house 
+    	where h_uid = #{u_id} 
+    	order by h_regdate desc
+    </select>
+    
+    <select id="searchHousepics" parameterType="int" resultType="java.lang.String">
+    	select hp_dir 
+    	from housepics 
+    	where hp_hnum = #{h_num}
+    </select>
+    
+    <select id="searchRoompics" parameterType="int" resultType="java.lang.String">
+    	select rp_dir 
+    	from roompics 
+    	where rp_hnum = #{h_num}
+    </select>
+    
+    <delete id="delMyHouse" parameterType="int">
+    	delete from house 
+     	where h_num=#{h_num} 
+    </delete>
+    
+    <select id="myHouseInfo" parameterType="int" resultType="dto.HouseDTO">
+		select h_num,h_type,h_name,h_roadaddr,h_detailaddr,h_region,h_limit,h_startdate,
+				 h_enddate,h_rooms,h_bath,h_contents,h_price 
+		from house 
+		where h_num = #{h_num}
+	</select>
+	
+	<select id="myRoominfo" parameterType="int" resultType="dto.RoomDTO">
+		select r_num,r_hnum,r_name,r_area,r_bath,r_price 
+		from room 
+		where r_hnum =#{h_num} 
+		order by r_num asc
+	</select>
+	
+	<select id="myHousepics" parameterType="int" resultType="dto.HousePicsDTO">
+    	select * 
+    	from housepics 
+    	where hp_hnum = #{h_num} 
+    	order by hp_num asc
+    </select>
+    
+    <select id="myRoompics" parameterType="hashmap" resultType="dto.RoomPicsDTO">
+    	select * 
+    	from roompics 
+    	where rp_hnum = #{hnum} and rp_rnum = #{rnum} 
+    	order by rp_num asc
+    </select>
+	
+	<update id="upMyHouseInfo" parameterType="dto.HouseDTO">
+		update house 
+        set h_name=#{h_name},h_region=#{h_region},h_roadaddr=#{h_roadaddr},h_detailaddr=#{h_detailaddr},
+        	  h_limit=#{h_limit},h_bath=#{h_bath},h_price=#{h_price},h_contents=#{h_contents} 
+        where h_num = #{h_num}
+	</update>
+	
+	<update id="upMyHousePic" parameterType="dto.HousePicsDTO">
+		update housepics 
+		set hp_dir = #{hp_dir} 
+		where hp_num = #{hp_num}
+	</update>
+	
+	<update id="upMyRoomInfo" parameterType="dto.RoomDTO">
+		update room 
+        set r_name=#{r_name},r_area=#{r_area},r_bath=#{r_bath},r_price=#{r_price}  
+        where r_num = #{r_num}
+	</update>
+	
+	<delete id="delMyHousePic" parameterType="int">
+		delete housepics 
+		where hp_num = #{hp_num}
+	</delete>
+	
+	<select id="roomPicGroup" parameterType="int" resultType="int">
+		select rp_rnum 
+		from roompics 
+		where rp_hnum=#{rp_hnum} 
+		group by rp_rnum 
+		order by rp_rnum
+	</select>
+	
+	<delete id="delMyRoomPic" parameterType="int">
+		delete roompics 
+		where rp_num = #{rp_num}
+	</delete>
+	
+	<update id="upMyRoomPic" parameterType="dto.RoomPicsDTO">
+		update roompics 
+		set rp_dir = #{rp_dir} 
+		where rp_num = #{rp_num}
+	</update>
+</mapper>

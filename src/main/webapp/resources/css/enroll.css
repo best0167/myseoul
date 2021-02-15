@@ -1,0 +1,28 @@
+h1{font-family: 'Noto Sans KR', sans-serif;font-weight:bold;text-align:center}
+
+.wrap_enroll{width:800px;height:1250px;margin:auto;background-image:url('../../images/enroll.png');background-size:100% 100%;background-repeat: no-repeat;font-family: 'Noto Sans KR', sans-serif;font-size:20px;}
+
+table{border-collapse: collapse;}
+
+tr{border-bottom: 1px solid darkgrey;}
+th,td{padding:5px;}
+tr:last-child{border-bottom:none;}
+tr > th:first-child{width:100px;}
+#menu_result{padding-top:10px;text-align:right;}
+
+
+.imgBox{outline: 2px dashed #92b0b3 ;outline-offset:-10px;text-align: center;transition: all .15s ease-in-out;width: 350px;height: 190px;background-color:rgba(241, 242, 246,0.5)}
+.innerText{display:inline-block;margin-top:79px;font-style: italic;font-size: 14px;}
+
+input{border:1px dotted lightgrey;border-radius: 5px;background-color: rgba( 255, 255, 255, 0.3 );}
+.input_btn{background-color:rgba(199, 236, 238,0.4);}
+
+#postcode, #region, #mainImg{display:none;}
+
+select {width: 130px;border: 1px dotted lightgrey;font-family: inherit;background: url('../../images/arrow_downward.png') no-repeat 95% 50%;border-radius: 5px;-webkit-appearance: none;-moz-appearance: none;appearance: none;}
+
+.cls_date{width:185px;}
+.cls_number{width:36px;}
+#input_price{width:95px;}
+
+.cancel{width:300px;color:red;margin-left:50px;}

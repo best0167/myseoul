@@ -1,0 +1,249 @@
+--회원등급
+CREATE TABLE GRADE(
+g_grade number(2) primary key,
+g_name varchar2(30) not null
+);
+--등급등록
+insert into grade values(0,'일반유저');
+insert into grade values(1,'판매유저');
+insert into grade values(2,'관리자');
+commit;
+
+--회원
+CREATE TABLE USERS(
+u_id varchar2(30) primary key,
+u_grade number(2) default 0, 
+u_pw varchar2(30) not null, 
+u_gender varchar2(3)not null, 
+u_phone varchar2(40) not null,
+u_email varchar2(50) not null unique,
+u_birth DATE not null, 
+u_nation varchar2(20) not null, 
+u_point number(10) default 0,
+u_name varchar2(30),
+u_regdate DATE default sysdate,
+FOREIGN KEY(u_grade)REFERENCES GRADE(g_grade)
+);
+
+--질문응답게시판
+CREATE TABLE QNA(
+q_num number(6) primary key,
+q_uid varchar2(30) not null, 
+q_title varchar2(50) not null, 
+q_contents varchar2(4000) not null, 
+q_regdate DATE default sysdate,
+q_image varchar2(300),
+q_readcnt number(6) default 0,
+q_ref number(6) not null, 
+q_restep number(6) not null, 
+q_relevel number(6) not null,
+FOREIGN KEY(q_uid)REFERENCES USERS(u_id) ON DELETE CASCADE
+);
+
+--공지사항게시판
+CREATE TABLE NOTICE(
+n_num number(6) primary key,
+n_uid varchar2(30) not null, 
+n_title varchar2(50) not null, 
+n_contents varchar2(4000) not null, 
+n_regdate DATE default sysdate,
+n_file varchar2(300),
+n_readcnt number(6) default 0,
+FOREIGN KEY(n_uid)REFERENCES USERS(u_id) ON DELETE CASCADE
+);
+
+
+--집유형
+CREATE TABLE CATEGORY(
+c_type number(6) primary key,
+c_name varchar2(30) not null
+);
+--집유형 등록
+insert into CATEGORY values(1,'아파트');
+insert into CATEGORY values(2,'빌라');
+insert into CATEGORY values(3,'상가');
+insert into CATEGORY values(4,'오피스텔');
+insert into CATEGORY values(5,'단독주택');
+commit;
+
+--집
+CREATE TABLE HOUSE(
+h_num number(6) primary key,
+h_type number(6) not null,
+h_uid varchar2(30) not null,
+h_name varchar2(50) not null,
+h_roadaddr varchar2(200) not null,
+h_detailaddr varchar2(200) not null,
+h_limit number(6) not null,
+h_startdate DATE not null,
+h_enddate DATE not null,
+h_rooms number(6) not null,
+h_bath number(6) not null,
+h_area number(6) not null,
+h_price number(10) not null,
+h_regdate DATE default sysdate,
+h_contents varchar2(4000),
+h_region varchar2(30) not null,
+h_readcnt number(6) default 0,
+h_stars number(2,1) default 0,
+h_permit varchar2(3) default 'n',
+h_permitdate DATE,
+h_gender varchar2(3),
+FOREIGN KEY(h_uid)REFERENCES USERS(u_id) ON DELETE CASCADE,
+FOREIGN KEY(h_type)REFERENCES CATEGORY(c_type)
+);
+
+--집사진들
+CREATE TABLE HOUSEPICS(
+hp_num number(6) primary key,
+hp_hnum number(6) not null,
+hp_dir varchar2(300) not null,
+FOREIGN KEY(hp_hnum)REFERENCES HOUSE(h_num) ON DELETE CASCADE
+);
+
+--방
+CREATE TABLE ROOM(
+r_num number(6) not null,
+r_hnum number(6) not null,
+r_name varchar2(50) not null,
+r_area number(6) not null, 
+r_bath varchar2(3) not null, 
+r_price number(10) not null, 
+r_state varchar2(3) default 'y',
+r_startdate DATE not null, 
+r_enddate DATE not null, 
+r_pid varchar2(30) not null,
+r_tstate varchar2(3) default 'y',
+PRIMARY KEY(r_hnum, r_num),
+FOREIGN KEY(r_hnum)REFERENCES HOUSE(h_num) ON DELETE CASCADE
+);
+
+--방사진들
+CREATE TABLE ROOMPICS(
+rp_num number(6) primary key,
+rp_hnum number(6) not null, 
+rp_rnum number(6) not null, 
+rp_dir varchar2(300) not null,
+FOREIGN KEY(rp_hnum,rp_rnum)REFERENCES ROOM(r_hnum,r_num) ON DELETE CASCADE
+);
+
+--장바구니
+CREATE TABLE BAG(
+b_num number(10) primary key,
+b_uid varchar2(30) not null, 
+b_hnum number(6) not null, 
+b_rnum number(6) not null, 
+b_name varchar2(50) not null, 
+b_price number(10) not null, 
+b_startdate DATE,
+b_enddate DATE,
+b_picture varchar2(300),
+b_roadaddr varchar2(200) not null, 
+b_detailaddr varchar2(200) not null, 
+b_pid varchar2(30) not null, 
+UNIQUE(b_uid,b_rnum,b_startdate), 
+FOREIGN KEY(b_uid)REFERENCES USERS(u_id) ON DELETE CASCADE,
+FOREIGN KEY(b_hnum,b_rnum)REFERENCES ROOM(r_hnum,r_num) ON DELETE CASCADE
+);
+
+--결제유형
+CREATE TABLE BUYTYPE(
+bt_type number(6) primary key,
+bt_name varchar2(30) not null
+);
+--결제유형 설정
+insert into BUYTYPE values(1,'실시간계좌이체');
+insert into BUYTYPE values(2,'무통장입금');
+insert into BUYTYPE values(3,'신용카드');
+commit;
+
+
+--결제내역
+CREATE TABLE BUYLIST(
+by_num number(6) primary key,
+by_type number(6) not null, 
+by_uid varchar2(30) not null, 
+by_pid varchar2(30) not null, 
+by_rnum number(6) not null, 
+by_hnum number(6) not null, 
+by_startdate DATE not null, 
+by_enddate DATE not null, 
+by_regdate DATE default sysdate,
+by_price number(10) not null, 
+by_point number(10) default 0, 
+by_refund varchar2(3) default 'n',
+by_totalprice number(10,0) not null,
+UNIQUE(by_uid,by_rnum,by_startdate),
+foreign key(by_type) references BUYTYPE(bt_type), 
+foreign key(by_uid) references USERS(u_id) on delete CASCADE
+);
+
+
+
+--방의 타임테이블
+CREATE TABLE TIMETABLE(
+t_num number(6) primary key,
+t_bynum number(6) not null, 
+t_uid varchar2(30) not null, 
+t_hnum number(6) not null, 
+t_rnum number(6) not null, 
+t_startdate DATE not null,
+t_enddate DATE not null, 
+foreign key(t_bynum) references BUYLIST(by_num) on delete CASCADE
+);
+
+
+--환불유형
+CREATE TABLE REFUNDTYPE(
+rft_type number(6) primary key,
+rft_name varchar2(30) not null
+);
+--환불유형 설정
+insert into REFUNDTYPE values(1,'계좌이체');
+insert into REFUNDTYPE values(2,'포인트');
+commit;
+
+
+--환불내역
+CREATE TABLE REFUND(
+rf_num number(6) primary key,
+rf_type number(6) not null, 
+rf_bynum number(6) not null, 
+rf_uid varchar(30) not null, 
+rf_hnum number(6) not null, 
+rf_rnum number(6) not null, 
+rf_contents varchar2(4000),
+rf_price number(10) not null, 
+rf_point number(10) default 0,
+rf_prog varchar2(6) default 'n',
+rf_regdate DATE default sysdate,
+rf_cdate DATE,
+foreign key(rf_type) references REFUNDTYPE(rft_type), 
+);
+
+--리뷰테이블
+CREATE TABLE REVIEW(
+rv_num number(6) primary key,
+rv_bynum number(6) not null,
+rv_uid varchar2(30) not null,
+rv_hnum number(6) not null,
+rv_contents varchar2(4000) not null,
+rv_regdate DATE default sysdate,
+rv_picture varchar2(300) ,
+rv_star number(2,1) default 1.0,
+foreign key(rv_bynum) references BUYLIST(by_num) ON DELETE CASCADE
+);
+
+--신청대기
+CREATE TABLE WATING(
+w_num number(6) primary key,
+w_uid varchar2(30) not null,
+w_sellnum varchar2(30) not null,
+w_regdate DATE default sysdate,
+w_cdate DATE,
+w_permit varchar2(3) default 'n',
+w_selldate DATE not null,
+w_sellname varchar2(30),
+w_leader varchar2(30),
+foreign key(w_uid) references USERS(u_id) ON DELETE CASCADE
+);

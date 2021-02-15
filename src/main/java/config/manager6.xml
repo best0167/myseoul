@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+ <mapper namespace="m6">
+ 
+    <select id="count" resultType="int" parameterType="dto.UsersListPageDTO">
+    <![CDATA[
+    SELECT COUNT(*) FROM(SELECT * FROM users WHERE u_grade != 2)b 
+       ]]>
+    <if test="u_grade == 9">
+    <if test="searchKey=='u_nation'">
+      <where>
+        lower(u_nation) like '%'||lower(#{searchWord})||'%'
+      </where>
+    </if>
+    <if test="searchKey=='u_id'">
+      <where>
+        lower(u_id) like '%'||lower(#{searchWord})||'%'
+      </where>
+    </if>
+    </if>
+    
+   <if test="u_grade != 9">
+    <if test="searchKey=='u_nation'">
+      <where>
+        lower(u_nation) like '%'||lower(#{searchWord})||'%' AND u_grade = #{u_grade}
+      </where>
+      
+    </if>
+    <if test="searchKey=='u_id'">
+      <where>
+        lower(u_id) like '%'||lower(#{searchWord})||'%' AND u_grade = #{u_grade}
+      </where>
+      
+    </if>
+    </if>
+    
+   </select>
+ 
+   <select id="selectUsers" resultType="dto.UsersDTO" parameterType="dto.UsersListPageDTO">
+   <![CDATA[
+       SELECT b.* FROM(SELECT rownum as rm, a.*
+       FROM(SELECT c.* FROM (SELECT * FROM users
+       ]]>
+          <if test="searchKey!=null">
+          
+        <if test="u_grade == 9">
+          <if test="searchKey=='u_nation'">
+          
+            <where> 
+              lower(u_nation) like '%'||lower(#{searchWord})||'%'
+            </where>
+          </if>
+          <if test="searchKey=='u_id'">
+            <where>
+              lower(u_id) like '%'||lower(#{searchWord})||'%'
+            </where>
+          </if>
+          </if>
+          <if test="u_grade != 9">
+     <if test="searchKey=='u_nation'">
+      <where>
+        lower(u_nation) like '%'||lower(#{searchWord})||'%' AND u_grade = #{u_grade}
+        </where>
+     </if>
+     <if test="searchKey=='u_id'">
+      <where>
+        lower(u_id) like '%'||lower(#{searchWord})||'%' AND u_grade = #{u_grade}
+      </where>
+     </if>
+   </if>
+   </if>
+   <![CDATA[
+      )c WHERE u_grade !=2 order by u_regdate desc)a)b 
+    WHERE b.rm >= #{startRow, jdbcType=VARCHAR} AND b.rm <= #{endRow, jdbcType=VARCHAR}
+    ]]>
+   </select>
+   
+   <select id="selectUser" parameterType="String" resultType="dto.UsersDTO">
+     <![CDATA[
+     SELECT * FROM users 
+     WHERE u_id=#{u_id}
+     ]]>
+   </select>
+   
+   <select id="selectPUser" parameterType="String" resultType="dto.UsersDTO">
+     SELECT * FROM users
+     WHERE u_id = #{r_pid}
+   </select>
+   
+   <delete id="deleteUser" parameterType="String">
+     DELETE FROM users WHERE u_id = #{u_id}
+   </delete>
+   
+   <update id="updateUser" parameterType="dto.UsersDTO">
+     UPDATE users 
+     SET u_name=#{u_name}, u_grade=#{u_grade}, u_gender=#{u_gender}, u_phone=#{u_phone}, u_email=#{u_email},
+                      u_birth=#{u_birth}, u_nation=#{u_nation}, u_point=#{u_point}
+     WHERE u_id=#{u_id}
+   </update>
+   
+   <insert id="insertVisit" parameterType="dto.VisitDTO">
+     INSERT INTO visit(v_num, v_uid, v_date, v_phone, v_pid, v_hnum, v_rnum, v_hname, v_hroadaddr, v_pname, v_pphone, v_rname, v_uname)
+     VALUES(visit_seq.nextval, #{v_uid}, #{v_date}, #{v_phone}, #{v_pid}, #{v_hnum}, #{v_rnum}, #{v_hname}, #{v_hroadaddr}, #{v_pname}, #{v_pphone}, #{v_rname}, #{v_uname})
+   </insert>
+   
+   <select id="selectRoom" parameterType="dto.RoomDTO" resultType="dto.RoomDTO">
+     SELECT * FROM room WHERE r_num = #{r_num} AND r_hnum = #{r_hnum}
+   </select>
+   
+   <select id="selectHouse" parameterType="int" resultType="dto.HouseDTO">
+     SELECT h_name, h_roadaddr FROM house WHERE h_num = #{r_hnum}
+   </select>
+   
+   <select id="selectVisit" parameterType="String" resultType="dto.VisitDTO">
+   <![CDATA[
+     SELECT * FROM visit WHERE v_uid=#{u_id}
+	]]>
+   </select>
+   
+   <select id="requestVisit" parameterType="String" resultType="dto.VisitDTO">
+     SELECT * FROM visit WHERE v_pid=#{u_id}
+   </select>
+   
+   <select id="adminRefundList" resultType="dto.RefundDTO" parameterType="dto.AdminRefundPageDTO">
+  <![CDATA[
+    SELECT b.*
+ 	FROM(SELECT rownum as rm, a.*
+      	 FROM(SELECT *
+      	 	  FROM refund
+   ]]>
+   <if test="searchKey!=null">
+     <if test="searchKey=='all'">
+       <where>
+         lower(rf_uid) like '%'||lower(#{searchWord})||'%' or lower(rf_pid) like '%'||lower(#{searchWord})||'%'
+       </where>
+     </if>
+     <if test="searchKey=='rf_uid'">
+      <where>
+        lower(rf_uid) like '%'||lower(#{searchWord})||'%'
+   	  </where>
+     </if>
+     <if test="searchKey=='rf_pid'">
+      <where>
+        lower(rf_pid) like '%'||lower(#{searchWord})||'%'
+      </where>
+     </if>
+   </if>
+   <![CDATA[
+      	 	  ORDER BY rf_regdate desc)a)b
+ 	WHERE b.rm>=#{startRow, jdbcType=VARCHAR} AND b.rm <=#{endRow, jdbcType=VARCHAR}
+ 	]]>
+   </select>
+   
+       <select id="refundCount" resultType="int" parameterType="dto.AdminRefundPageDTO">
+    SELECT COUNT(*) FROM refund
+     <if test="searchKey=='all'">
+       <where>
+         lower(rf_uid) like '%'||lower(#{searchWord})||'%' or lower(rf_pid) like '%'||lower(#{searchWord})||'%'
+       </where>
+     </if>
+    <if test="searchKey=='rf_uid'">
+      <where>
+        lower(rf_uid) like '%'||lower(#{searchWord})||'%'
+      </where>
+    </if>
+    <if test="searchKey=='rf_pid'">
+      <where>
+        lower(rf_pid) like '%'||lower(#{searchWord})||'%'
+      </where>
+    </if>
+   </select>
+    
+ </mapper>

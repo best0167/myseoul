@@ -1,0 +1,83 @@
+--질문응답 글번호 QNA(q_num)
+CREATE SEQUENCE qna_seq 
+  start with 1 
+  increment by 1 
+  nocache 
+  nocycle;
+
+--공지사항 글번호. NOTICE(n_num)
+CREATE SEQUENCE notice_seq 
+  start with 1 
+  increment by 1 
+  nocache 
+  nocycle;
+
+--집 등록번호. HOUSE(h_num)
+CREATE SEQUENCE house_seq 
+  start with 1 
+  increment by 1 
+  nocache 
+  nocycle;
+
+--집사진 번호. HOUSEPICS(hp_num)
+CREATE SEQUENCE housepics_seq 
+  start with 1 
+  increment by 1 
+  nocache 
+  nocycle;
+
+--방 번호. ROOM(r_num)
+CREATE SEQUENCE room_seq 
+  start with 1 
+  increment by 1 
+  nocache 
+  nocycle;
+
+--방사진번호. ROOMPICS(rp_num)
+CREATE SEQUENCE roompics_seq 
+  start with 1 
+  increment by 1 
+  nocache 
+  nocycle;
+
+--장바구니번호. BAG(b_num)
+CREATE SEQUENCE bag_seq 
+  start with 1 
+  increment by 1 
+  nocache 
+  nocycle;
+
+--결제내역 결제번호. BUYLIST(by_num)
+CREATE SEQUENCE buylist_seq 
+  start with 1 
+  increment by 1 
+  nocache 
+  nocycle;
+
+--환불내역 환불번호. REFUND(rf_num)
+CREATE SEQUENCE refund_seq 
+  start with 1 
+  increment by 1 
+  nocache 
+  nocycle;
+
+--방의 타임테이블번호. TIMETABLE(t_num)
+CREATE SEQUENCE timetable_seq 
+  start with 1 
+  increment by 1 
+  nocache 
+  nocycle;
+
+--리뷰게시판 글번호. REVIEW(rv_num)
+CREATE SEQUENCE review_seq 
+  start with 1 
+  increment by 1 
+  nocache 
+  nocycle;
+
+--신청대기테이블 신청번호. WATING(w_num)
+CREATE SEQUENCE wating_seq 
+  start with 1 
+  increment by 1 
+  nocache 
+  nocycle;

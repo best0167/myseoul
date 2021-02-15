@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+ <mapper namespace="m2">
+    
+    <!-- 모든 레코드 수를 가져옴  -->
+ <select id="count"  resultType="int" parameterType="dto.PageDTO">
+   select count(*) from qna
+   <if test="searchKey=='q_title'">
+      <where>
+         lower(q_title) like '%' || lower(#{searchWord}) || '%' 
+      </where>
+   </if>
+   
+   <if test="searchKey=='q_uid'">
+      <where>
+         lower(q_uid) like '%' || lower(#{searchWord}) || '%'
+      </where>
+   </if>
+</select>
+   
+    <select id="list" resultType="dto.QnaDTO" parameterType="dto.PageDTO">
+   <![CDATA[
+   select b.*
+   from (select rownum as rm, a.*
+      from (select *
+         from qna
+   ]]>
+      <if test="searchKey!=null">
+         <if test="searchKey=='q_title'">
+            <where>
+               lower(q_title) like '%' || lower(#{searchWord}) || '%' 
+            </where>
+         </if>
+         
+            <if test="searchKey=='q_uid'">
+            <where>
+               lower(q_uid) like '%' || lower(#{searchWord}) || '%'
+            </where>
+         </if>
+      </if>
+   <![CDATA[
+   order by q_ref desc, q_restep asc) a)b
+   where b.rm>=#{startRow} and b.rm<=#{endRow}
+   ]]>
+</select>
+   
+   
+<!-- 
+ <select id="list" resultType="dto.BoardDTO">
+  	select * from qna order by q_ref desc, q_restep asc -->
+   <update id="readCount" parameterType="int">
+     	update qna
+     	set q_readcnt=q_readcnt+1
+     	where q_num=#{q_num}
+     </update>
+     
+     <select id="content" parameterType="int" resultType="dto.QnaDTO">
+     	select * from qna
+     	where q_num=#{q_num}
+     </select>
+  
+  <update id="reStepCount"  parameterType="dto.QnaDTO">
+     	update qna set q_restep=q_restep+1
+     	where q_ref=#{q_ref} and q_restep>#{q_restep}
+     </update>
+ 
+     <insert id="save" parameterType="dto.QnaDTO">
+     	insert into 
+     	qna(q_num,q_uid,q_title,q_regdate,
+     				q_readcnt,q_ref,q_restep,q_relevel,q_contents,q_image)
+     	values(qna_seq.nextval,#{q_uid},#{q_title}, sysdate,
+     	
+     	0,
+     	<choose>
+     	<when test="q_ref==0">
+     	qna_seq.nextval
+     	</when>
+     	<otherwise>
+     	#{q_ref}
+     	</otherwise>
+     	
+     	</choose>
+     	
+
+     	,#{q_restep},#{q_relevel},#{q_contents},#{q_image,jdbcType=VARCHAR})
+     </insert>
+     
+     
+     <!--  위에까지는 이상이 없었음.  -->
+     <select id="uploadFile" parameterType="int" resultType="String">
+     		select q_image from qna
+     		where q_num=#{q_num}
+     </select>
+     
+     <update id="update" parameterType="dto.QnaDTO">
+     update qna
+     set q_title=#{q_title}, q_contents=#{q_contents}
+
+     	,q_image=#{q_image, jdbcType=VARCHAR}
+
+     where q_num=#{q_num}
+     
+     </update>
+     
+     <delete id="delete" parameterType="int">
+     	delete from qna 
+     	where q_ref=#{q_ref}
+     	<if test='q_ref!=q_num'>
+     		and q_num=#{q_num}
+     	</if>
+     </delete>
+     <!-- 여기서부터 공지사항 -->
+     
+     
+     
+     
+     
+     
+     
+     <!-- 모든 레코드 수를 가져옴  -->
+ <select id="count2"  resultType="int" parameterType="dto.PageDTO">
+   select count(*) from notice
+   <if test="searchKey=='n_title'">
+      <where>
+         lower(n_title) like '%' || lower(#{searchWord}) || '%' 
+      </where>
+   </if>
+   
+   <if test="searchKey=='n_uid'">
+      <where>
+         lower(n_uid) like '%' || lower(#{searchWord}) || '%'
+      </where>
+   </if>
+</select>
+   
+    <select id="list2" resultType="dto.NoticeDTO" parameterType="dto.PageDTO">
+   <![CDATA[
+   select b.*
+   from (select rownum as rm, a.*
+      from (select *
+         from notice
+   ]]>
+      <if test="searchKey!=null">
+         <if test="searchKey=='n_title'">
+            <where>
+               lower(n_title) like '%' || lower(#{searchWord}) || '%' 
+            </where>
+         </if>
+         
+            <if test="searchKey=='n_uid'">
+            <where>
+               lower(n_uid) like '%' || lower(#{searchWord}) || '%'
+            </where>
+         </if>
+      </if>
+    <![CDATA[
+   order by n_num desc) a)b
+   where b.rm>=#{startRow} and b.rm<=#{endRow}
+   ]]> 
+</select>
+ 
+ <update id="readCount2" parameterType="int">
+     	update notice
+     	set n_readcnt=n_readcnt+1
+     	where n_num=#{n_num}
+     </update>
+     
+     <select id="content2" parameterType="int" resultType="dto.NoticeDTO">
+     	select * from notice
+     	where n_num=#{n_num}
+     </select>
+  
+ <insert id="save2" parameterType="dto.NoticeDTO">
+     	insert into 
+     	notice(n_num,n_uid,n_title,n_regdate,
+     				n_readcnt,n_contents,n_file)
+     	values(notice_seq.nextval,#{n_uid},#{n_title}, sysdate,0,
+     	#{n_contents},#{n_file,jdbcType=VARCHAR})
+     </insert>
+     
+     
+  
+     <select id="uploadFile2" parameterType="int" resultType="String">
+     		select n_file from notice
+     		where n_num=#{n_num}
+     </select>
+ 
+ 
+ <update id="update2" parameterType="dto.NoticeDTO">
+     update notice
+     set n_title=#{n_title}, n_contents=#{n_contents}
+     <if test="n_file!=null">
+     	,n_file=#{n_file, jdbcType=VARCHAR}
+     </if>
+     where n_num=#{n_num}
+     
+     </update>
+     
+     
+     <delete id="delete2" parameterType="int">
+     	delete from notice
+     	where n_num=#{n_num}
+     
+     </delete>
+     
+     
+     
+
+     
+      
+     
+     
+ </mapper>
+ 
+ 
+ 
+ 
+ 
+ 

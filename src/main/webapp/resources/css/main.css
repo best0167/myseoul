@@ -1,0 +1,8 @@
+.standard{position:relative;float: right;font-weight: lighter;font-size: 18px;margin-top:20px;color:#535c68;}
+.wrap_contents{width:100%;}
+.td_rank{width:22%;background-position:45% 50%;background-size:97% 93%;background-repeat: no-repeat;}
+.top_list{cursor: pointer;}
+
+.rank_info{margin-top:-3px;}
+.rank_info_left{float:left;padding-left:10px;font-size:15px;color:#7f8c8d;}
+.rank_info_right{float: right;padding-right: 10px;}

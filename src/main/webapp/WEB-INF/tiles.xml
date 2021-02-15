@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+
+<tiles-definitions>
+<!-- 메인페이지용 타일즈셋 -->
+    <definition name="main" template="/WEB-INF/view/template/mainLayout.jsp">
+        <put-attribute name="title" value="메인페이지" />
+        <put-attribute name="header" value="/WEB-INF/view/template/header.jsp" />
+        <put-attribute name="slider" value="/WEB-INF/view/imageSlider.jsp" />
+        <put-attribute name="body" value="/WEB-INF/view/main.jsp" />
+        <put-attribute name="footer" value="/WEB-INF/view/template/footer.jsp" />
+    </definition>
+<!-- 메인페이지 타일즈셋 -->
+    
+<!-- 인덱스 타일즈셋 : Default타일즈임 -->    
+    <definition name="index" template="/WEB-INF/view/template/layout.jsp">
+        <put-attribute name="title" value="인덱스페이지" />
+        <put-attribute name="header" value="/WEB-INF/view/template/header.jsp" />
+        <put-attribute name="body" value="/WEB-INF/view/index.jsp" />
+        <put-attribute name="footer" value="/WEB-INF/view/template/footer.jsp" />
+    </definition>
+<!-- 인덱스 타일즈셋 : Default타일즈임 -->
+    
+<!-- 로그인,아웃 관련 -->    
+    <definition name="login" extends="index">
+        <put-attribute name="title" value="로그인" />
+        <put-attribute name="body" value="/WEB-INF/view/login.jsp" />
+    </definition>
+    
+    <definition name="join" extends="index">
+        <put-attribute name="title" value="회원가입" />
+        <put-attribute name="body" value="/WEB-INF/view/join.jsp" />
+    </definition>
+    
+    <definition name="searchUser" extends="index">
+		<put-attribute name="title" value="아이디 찾기"/>
+		<put-attribute name="body" value="/WEB-INF/view/searchUser.jsp"/>
+	</definition>
+	
+	<definition name="searchUserPw" extends="index">
+		<put-attribute name="title" value="비밀번호 찾기"/>
+		<put-attribute name="body" value="/WEB-INF/view/searchUserPw.jsp"/>
+	</definition>
+	
+	<definition name="find_id" extends="index">
+		<put-attribute name="title" value="아이디 찾기"/>
+		<put-attribute name="body" value="/WEB-INF/view/find_id.jsp"/>
+	</definition>
+	
+	<definition name="find_pw" extends="index">
+		<put-attribute name="title" value="비밀번호 찾기"/>
+		<put-attribute name="body" value="/WEB-INF/view/find_pw.jsp"/>
+	</definition>
+<!-- 로그인,아웃 관련 -->    
+    
+    
+    
+<!-- 상단메뉴 -->    
+    <definition name="house_list" extends="index">
+        <put-attribute name="title" value="리스트로찾기" />
+        <put-attribute name="body" value="/WEB-INF/view/house_list.jsp" />
+    </definition>
+    
+    <definition name="mapSearch" extends="index">
+        <put-attribute name="title" value="지도로찾기" />
+        <put-attribute name="body" value="/WEB-INF/view/mapSearch.jsp" />
+    </definition>
+    
+    <definition name="enroll" extends="index">
+        <put-attribute name="title" value="집등록" />
+        <put-attribute name="body" value="/WEB-INF/view/enroll.jsp" />
+    </definition>
+    
+    <definition name="notice" extends="index">
+        <put-attribute name="title" value="공지사항" />
+        <put-attribute name="body" value="/WEB-INF/view/notice.jsp" />
+    </definition>
+    
+    <definition name="notice_user_view" extends="index">
+        <put-attribute name="title" value="공지사항" />
+        <put-attribute name="body" value="/WEB-INF/view/notice_user_view.jsp" />
+    </definition>
+    
+    <definition name="faq" extends="index">
+        <put-attribute name="title" value="자주묻는질문" />
+        <put-attribute name="body" value="/WEB-INF/view/faq.jsp" />
+    </definition>
+    
+    <definition name="qna" extends="index">
+        <put-attribute name="title" value="질문응답게시판" />
+        <put-attribute name="body" value="/WEB-INF/view/list.jsp" />
+    </definition>
+    
+    <definition name="write" extends="index">
+        <put-attribute name="title" value="질문응답게시판" />
+        <put-attribute name="body" value="/WEB-INF/view/write.jsp" />
+    </definition>
+    
+    <definition name="view" extends="index">
+        <put-attribute name="title" value="질문응답게시판" />
+        <put-attribute name="body" value="/WEB-INF/view/view.jsp" />
+    </definition>
+
+    <definition name="update" extends="index">
+        <put-attribute name="title" value="질문응답게시판" />
+        <put-attribute name="body" value="/WEB-INF/view/update.jsp" />
+    </definition>
+    
+    <definition name="myCart" extends="index">
+        <put-attribute name="title" value="장바구니" />
+        <put-attribute name="body" value="/WEB-INF/view/myCart.jsp" />
+    </definition>
+    
+    <definition name="enrollRoom" extends="index">
+        <put-attribute name="title" value="방등록" />
+        <put-attribute name="body" value="/WEB-INF/view/enrollRoom.jsp" />
+    </definition>
+<!-- 상단메뉴 -->    
+    
+<!-- 관리자페이지 타일즈임 -->    
+    <definition name="admin_index" template="/WEB-INF/view/adminTemplate/adminLayout.jsp">
+        <put-attribute name="title" value="관리자 인덱스 페이지" />
+        <put-attribute name="admin_header" value="/WEB-INF/view/adminTemplate/adminHeader.jsp" />
+        <put-attribute name="admin_menu" value="/WEB-INF/view/adminTemplate/adminSideBar.jsp" />
+        <put-attribute name="admin_body" value="/WEB-INF/view/adminIndex.jsp" />
+    </definition>
+    
+    <definition name="admin_user" extends="admin_index">
+        <put-attribute name="title" value="회원관리" />
+        <put-attribute name="admin_body" value="/WEB-INF/view/adminUser.jsp" />
+    </definition>
+    
+    <definition name="admin_enroll" extends="admin_index">
+        <put-attribute name="title" value="등록관리" />
+        <put-attribute name="admin_body" value="/WEB-INF/view/adminEnroll.jsp" />
+    </definition>
+    
+    <definition name="admin_refund" extends="admin_index">
+        <put-attribute name="title" value="환불관리" />
+        <put-attribute name="admin_body" value="/WEB-INF/view/adminRefund.jsp" />
+    </definition>
+    
+    <definition name="admin_sale" extends="admin_index">
+        <put-attribute name="title" value="매출관리" />
+        <put-attribute name="admin_body" value="/WEB-INF/view/adminSale.jsp" />
+    </definition>
+    
+    <definition name="admin_notice" extends="admin_index">
+        <put-attribute name="title" value="공지사항" />
+        <put-attribute name="admin_body" value="/WEB-INF/view/adminNotice.jsp" />
+    </definition>
+    
+    <definition name="write2" extends="admin_index">
+        <put-attribute name="title" value="공지등록" />
+        <put-attribute name="admin_body" value="/WEB-INF/view/write2.jsp" />
+    </definition>
+    
+    <definition name="view2" extends="admin_index">
+        <put-attribute name="title" value="공지글보기" />
+        <put-attribute name="admin_body" value="/WEB-INF/view/view2.jsp" />
+    </definition>
+    
+    <definition name="update2" extends="admin_index">
+        <put-attribute name="title" value="공지글수정" />
+        <put-attribute name="admin_body" value="/WEB-INF/view/update2.jsp" />
+    </definition>
+    
+    <definition name="admin_qna" extends="admin_index">
+        <put-attribute name="title" value="질의응답" />
+        <put-attribute name="admin_body" value="/WEB-INF/view/list.jsp" />
+    </definition>
+    
+    <definition name="admin_qna_write" extends="admin_index">
+        <put-attribute name="title" value="질의응답" />
+        <put-attribute name="admin_body" value="/WEB-INF/view/write.jsp" />
+    </definition>
+    
+    <definition name="admin_qna_view" extends="admin_index">
+        <put-attribute name="title" value="질의응답" />
+        <put-attribute name="admin_body" value="/WEB-INF/view/view.jsp" />
+    </definition>
+    
+    <definition name="admin_qna_update" extends="admin_index">
+        <put-attribute name="title" value="질의응답" />
+        <put-attribute name="admin_body" value="/WEB-INF/view/update.jsp" />
+    </definition>
+    
+    <definition name="adminPermitEnroll" extends="admin_index">
+        <put-attribute name="title" value="전체등록관리" />
+        <put-attribute name="admin_body" value="/WEB-INF/view/adminEnrollTotal.jsp" />
+    </definition>
+    
+    <definition name="admin_user_total" extends="admin_index">
+        <put-attribute name="title" value="전체회원관리" />
+        <put-attribute name="admin_body" value="/WEB-INF/view/adminUserTotal.jsp" />
+    </definition>
+    
+    <definition name="admin_user_update" extends="admin_index">
+    	<put-attribute name="title" value="회원관리"/>
+    	<put-attribute name="admin_body" value="/WEB-INF/view/adminUserUpdate.jsp"/>
+    </definition>
+    
+<!-- 관리자페이지 타일즈 -->
+
+ <!-- 리뷰작성페이지 -->
+    <definition name="reviewPage" extends="index">
+        <put-attribute name="title" value="리뷰작성" />
+        <put-attribute name="body" value="/WEB-INF/view/reviewPage.jsp" />
+    </definition>
+
+<!-- 집 상세정보페이지 -->
+    <definition name="homeDetail" extends="index">
+    	<put-attribute name="title" value="집 상세페이지" />
+    	<put-attribute name="body" value="/WEB-INF/view/house_detail.jsp" />
+    </definition>
+<!-- 집 상세정보페이지 -->
+
+<!-- 결제페이지 -->
+    <definition name="buyPage" extends="index">
+        <put-attribute name="title" value="결제하기" />
+        <put-attribute name="body" value="/WEB-INF/view/buyPage.jsp" />
+    </definition>
+    
+<!-- 마이페이지 -->
+    <!-- 개인정보조회 -->
+    <definition name="myPage" template="/WEB-INF/view/template/mypageLayout.jsp">
+        <put-attribute name="title" value="마이페이지" />
+        <put-attribute name="header" value="/WEB-INF/view/template/header.jsp" />
+        <put-attribute name="mypage_menu" value="/WEB-INF/view/template/mypage_menu.jsp" />
+        <put-attribute name="mypage_body" value="/WEB-INF/view/mypage_users_info.jsp" />
+        <put-attribute name="footer" value="/WEB-INF/view/template/footer.jsp" />
+    </definition>
+    
+    <!-- 개인정보수정 -->
+    <definition name="userUpdate" extends="myPage">
+    	<put-attribute name="title" value="개인정보수정" />
+    	<put-attribute name="mypage_body" value="/WEB-INF/view/mypage_users_update.jsp" />
+    </definition>
+    <definition name="mypage_users_check" extends="myPage">
+    	<put-attribute name="title" value="비밀번호 확인" />
+    	<put-attribute name="mypage_body" value="/WEB-INF/view/mypage_users_check.jsp" />
+    </definition>
+    
+    <!-- 예약내역 -->
+    <definition name="userReservation" extends="myPage">
+    	<put-attribute name="title" value="예약내역" />
+    	<put-attribute name="mypage_body" value="/WEB-INF/view/mypage_users_reservation.jsp" />
+    </definition>
+    
+    <!-- 결제내역 -->
+    <definition name="userBuylist" extends="myPage">
+    	<put-attribute name="title" value="결제내역" />
+    	<put-attribute name="mypage_body" value="/WEB-INF/view/mypage_users_buylist.jsp" />
+    </definition>
+    
+    <!-- 환불내역 -->
+    <definition name="userRefundlist" extends="myPage">
+    	<put-attribute name="title" value="환불내역" />
+    	<put-attribute name="mypage_body" value="/WEB-INF/view/mypage_users_refundlist.jsp" />
+    </definition>
+    
+    <!-- 환불신청서 -->
+    <definition name="userApplyRefund" extends="myPage">
+       <put-attribute name="title" value="환불신청" />
+       <put-attribute name="mypage_body" value="/WEB-INF/view/mypage_users_applyRefund.jsp" />
+    </definition>
+    
+    <!-- 장바구니 -->
+    <definition name="userBag" extends="myPage">
+    	<put-attribute name="title" value="장바구니" />
+    	<put-attribute name="mypage_body" value="/WEB-INF/view/mypage_users_bag.jsp" />
+    </definition>
+    
+    <!-- 판매자신청하기 -->
+    <definition name="sellerApply" extends="myPage">
+    	<put-attribute name="title" value="계정전환" />
+    	<put-attribute name="mypage_body" value="/WEB-INF/view/mypage_seller_apply.jsp" />
+    </definition>
+    
+    <!-- 판매자:호스팅관리 -->
+    <definition name="myHosting" extends="myPage">
+    	<put-attribute name="title" value="나의 호스팅" />
+    	<put-attribute name="mypage_body" value="/WEB-INF/view/mypage_users_myHosting.jsp" />
+    </definition>
+    
+    <!-- 판매자:호스팅수정 -->
+    <definition name="upMyHosting" extends="myPage">
+    	<put-attribute name="title" value="호스팅수정" />
+    	<put-attribute name="mypage_body" value="/WEB-INF/view/mypage_seller_upMyHosting.jsp" />
+    </definition>
+    
+    <!-- 판매자:예약 요청 내역 -->
+    <definition name="requestReservation" extends="myPage">
+    	<put-attribute name="title" value="예약 요청"/>
+    	<put-attribute name="mypage_body" value="/WEB-INF/view/mypage_request_reservation.jsp"/>
+    </definition>
+    
+    <!-- 판매자:환불허가 -->
+    <definition name="permitRefund" extends="myPage">
+    	<put-attribute name="title" value="예약내역" />
+    	<put-attribute name="mypage_body" value="/WEB-INF/view/mypage_users_permitRefund.jsp" />
+    </definition>
+    
+<!-- 마이페이지 -->
+
+
+</tiles-definitions>

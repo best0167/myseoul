@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+ <mapper namespace="sm">
+     
+     <select id="loginCheck" parameterType="dto.UsersDTO" resultType="int">
+         select count(*) from users 
+         where u_id=#{u_id} and u_pw=#{u_pw}
+     </select>
+     
+     <select id="myPoint" parameterType="String" resultType="int">
+         select u_point from users 
+         where u_id=#{u_id}
+     </select>
+     
+     <select id="userGnum" parameterType="String" resultType="int">
+        select u_grade 
+        from users 
+        where u_id=#{u_id}
+    </select>
+    
+    <select id="gradeName" parameterType="int" resultType="String">
+        select g_name 
+        from grade 
+        where g_grade=#{g_num}
+    </select>
+    
+    <insert id="register">
+ 		insert into users (
+ 			u_id,
+ 			u_pw,
+ 			u_phone,
+ 			u_gender,
+ 			u_email,
+ 			u_birth,
+ 			u_nation,
+ 			u_name, 
+ 			u_regdate
+ 		) values (
+ 			#{u_id},
+ 			#{u_pw},
+ 			#{u_phone},
+ 			#{u_gender},
+ 			#{u_email},
+ 			#{u_birth},
+ 			#{u_nation},
+ 			#{u_name}, 
+ 			default
+ 		)
+ 	</insert>
+    
+    <select id="idChk" resultType="int">
+		<![CDATA[
+			select count(*) from users
+			where u_id = #{u_id}
+		]]>
+	</select>
+ </mapper>

@@ -1,0 +1,24 @@
+h1{font-family: 'Noto Sans KR', sans-serif;font-weight:bold;text-align:center}
+
+.wrap_enroll{width:800px;height:1250px;margin:auto;background-image:url('../../images/enroll.png');background-size:100% 100%;background-repeat: no-repeat;font-family: 'Noto Sans KR', sans-serif;font-size:20px;overflow:auto;}
+fieldset{margin-left:50px;width:700px;border-left-width:12px;}
+
+
+summary{color:#ff7979}
+details > summary::-webkit-details-marker {display: none}
+
+
+table{border-collapse: collapse;}
+
+tr{border-bottom: 1px solid darkgrey;}
+th,td{padding:5px;}
+tr:last-child{border-bottom:none;}
+tr > th:first-child{width:100px;}
+tr > td{width:500px;}
+#menu_result{text-align:right;margin-top:10px;margin-right:50px}	
+
+input{border:1px dotted lightgrey;border-radius: 5px;background-color: rgba( 255, 255, 255, 0.3 );}
+.input_btn{background-color:rgba(199, 236, 238,0.4);width:25px;}
+.cls_number{width:36px;}
+.cls_price{width:95px;}
+.cls_none{display:none;} 

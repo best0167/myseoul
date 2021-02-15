@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+ <mapper namespace="m5">
+    <select id="view" parameterType="int" resultType="dto.HouseDTO" >
+    	select * from house
+    	where h_num=#{h_num}
+    </select>
+    <!-- <resultMap type="dto.HouseDTO" id="dto">
+    	<result column="h_num" property="h_num"/>
+    	<result column="h_type" property="h_type"/>
+    	<result column="h_uid" property="h_uid"/>
+    	<result column="h_name" property="h_name"/>
+    	<result column="h_roadaddr" property="h_roadaddr"/>
+    	<result column="h_detailaddr" property="h_detailaddr"/>
+    	<result column="h_limit" property="h_limit"/>
+    	<result column="h_startdate" property="h_startdate"/>
+    	<result column="h_enddate" property="h_enddate"/>
+    	<result column="h_rooms" property="h_rooms"/>
+    	<result column="h_bath" property="h_bath"/>
+    	<result column="h_area" property="h_area"/>
+    	<result column="h_price" property="h_price"/>
+    	<result column="h_regdate" property="h_regdate"/>
+    	<result column="h_contents" property="h_contents"/>
+    	<result column="h_region" property="h_region"/>
+    	<result column="h_readcnt" property="h_readcnt"/>
+    	<result column="h_stars" property="h_stars"/>
+    	<result column="h_permit" property="h_permit"/>
+    	<result column="h_permitdate" property="h_permitdate"/>
+    	<collection property="h_pics" ofType="dto.HousePicsDTO" javaType="java.util.List">
+    		<result column="hp_num" property="hp_num"/>
+    		<result column="hp_hnum" property="hp_hnum"/>
+    		<result column="hp_dir" property="hp_dir"/>
+    	</collection>
+    </resultMap> -->
+    
+    <!-- 리스트 -->
+    <select id="list" resultType="dto.HouseDTO" parameterType="dto.PageDTO">
+    	<![CDATA[ 
+        select b.* from (select rownum as rm, a.* 
+        from (select * 
+              from house 
+        ]]>
+    	<where>
+    	<choose>
+    	<when test="h_type != 0 and h_rooms != 0 and h_bath !=0">
+    		h_type = #{h_type} and h_rooms >= #{h_rooms}and h_bath >= #{h_bath} and h_permit = 'y'
+    	</when>
+    	<when test="h_type != 0 and h_rooms != 0 and h_bath ==0">
+    		h_type = #{h_type} and h_rooms >= #{h_rooms} and h_permit = 'y'
+    	</when>
+    	<when test="h_type != 0 and h_rooms == 0 and h_bath !=0">
+    		h_type = #{h_type} and h_bath >= #{h_bath} and h_permit = 'y'
+    	</when>
+    	<when test="h_type == 0 and h_rooms != 0 and h_bath !=0">
+    		h_rooms >= #{h_rooms} and h_bath >= #{h_bath} and h_permit = 'y'
+    	</when>
+    	<when test="h_type != 0 and h_rooms == 0 and h_bath ==0">
+    	    h_type = #{h_type} and h_permit = 'y'
+    	</when>
+    	<when test="h_type == 0 and h_rooms != 0 and h_bath ==0">
+    	    h_rooms >= #{h_rooms} and h_permit = 'y'
+    	</when>
+    	<when test="h_type == 0 and h_rooms == 0 and h_bath !=0">
+    	    h_bath >= #{h_bath} and h_permit = 'y'
+    	</when>
+    	<otherwise>
+    	  h_permit = 'y'
+    	</otherwise>
+    	</choose>
+    	</where>
+    	<![CDATA[
+              order by h_num desc) a)b 
+        where b.rm>=#{startRow} and b.rm<=#{endRow} 
+        ]]>
+    </select>
+    
+    <!-- 집 디테일 -->
+    <select id="pics" parameterType="int" resultType="dto.HousePicsDTO">
+    	select * from housepics
+    	where hp_hnum=#{h_num}
+    </select>
+    <!-- 집 대표사진 -->
+    <select id="mainpic" parameterType="int" resultType="String">
+    	select hp_dir 
+    	from housepics 
+    	where hp_hnum=#{h_num} and rownum=1  
+    </select>
+    <update id="readCount" parameterType="int">
+    	update house set
+    	h_readcnt = h_readcnt+1
+    	where h_num= #{h_num}
+    </update>
+    
+    
+    <!-- 리스트카운트 -->
+    <select id="count" resultType="int" parameterType="dto.PageDTO">
+    	select count(*) from house
+    	<where>
+    	<choose>
+    	<when test="h_type != 0 and h_rooms != 0 and h_bath !=0">
+    		h_type = #{h_type} and h_rooms >= #{h_rooms}and h_bath >= #{h_bath} and h_permit = 'y'
+    	</when>
+    	<when test="h_type != 0 and h_rooms != 0 and h_bath ==0">
+    		h_type = #{h_type} and h_rooms >= #{h_rooms} and h_permit = 'y'
+    	</when>
+    	<when test="h_type != 0 and h_rooms == 0 and h_bath !=0">
+    		h_type = #{h_type} and h_bath >= #{h_bath} and h_permit = 'y'
+    	</when>
+    	<when test="h_type == 0 and h_rooms != 0 and h_bath !=0">
+    		h_rooms >= #{h_rooms} and h_bath >= #{h_bath} and h_permit = 'y'
+    	</when>
+    	<when test="h_type != 0 and h_rooms == 0 and h_bath ==0">
+    	    h_type = #{h_type} and h_permit = 'y'
+    	</when>
+    	<when test="h_type == 0 and h_rooms != 0 and h_bath ==0">
+    	    h_rooms >= #{h_rooms} and h_permit = 'y'
+    	</when>
+    	<when test="h_type == 0 and h_rooms == 0 and h_bath !=0">
+    	    h_bath >= #{h_bath} and h_permit = 'y'
+    	</when>
+    	<otherwise>
+    	  h_permit = 'y'
+    	</otherwise>
+    	</choose>
+    	</where>
+    	
+    </select>
+    
+ </mapper>

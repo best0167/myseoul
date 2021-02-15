@@ -1,0 +1,54 @@
+.area {position: absolute;background: #fff;border: 1px solid #888;border-radius: 3px;font-size: 12px;top: -5px;left: 15px;padding:2px;}
+.info {font-size: 12px;padding: 5px;}
+.info .title {font-weight: bold;}
+.customOverlay{color : red;font-size:14px;font-weight:bold;}
+.map_wrap {position:relative;width:100%;height:500px;}
+.radius_border{border:outset 2px lightgrey; border-radius: 7px ;}
+.custom_typecontrol {position:absolute;top:10px;right:10px;overflow:hidden;width:65px;height:30px;margin:0;padding:0;z-index:1;font-size:12px;font-weight:bold;color:white;}
+.custom_typecontrol span {display:block;width:65px;height:30px;float:left;text-align:center;line-height:30px;cursor:pointer;}
+.custom_typecontrol .backTo_btn {background:#5B5E7F;}        
+.custom_typecontrol .backTo_btn:hover {background:#636e72;}
+.custom_zoomcontrol {position:absolute;top:50px;right:10px;width:36px;height:80px;overflow:hidden;z-index:1;background-color:#5B5E7F;} 
+.custom_zoomcontrol span {display:block;width:36px;height:40px;text-align:center;cursor:pointer;}     
+.custom_zoomcontrol span img {width:20px;height:20px;position:absolute;z-index: 7;margin-left: -12px;margin-top: 7px;}             
+.custom_zoomcontrol span:first-child{border-bottom:1px solid #bfbfbf;}
+
+
+.pop_title{width: 100%;height: 100px;background-color: #68ca86;margin-top: 6%;}
+.pop_wrap {position: absolute;left: 0;bottom: 40px;width: 288px;height: 132px;margin-left: -144px;text-align: left;overflow: hidden;font-size: 12px;font-family: 'Malgun Gothic', dotum, '돋움', sans-serif;line-height: 1.5;}
+.pop_wrap * {padding: 0;margin: 0;}
+.pop_wrap .pop_info {width: 286px;height: 120px;border-radius: 5px;border-bottom: 2px solid #ccc;border-right: 1px solid #ccc;overflow: hidden;background: #fff;}
+.pop_wrap .pop_info:nth-child(1) {border: 0;box-shadow: 0px 1px 2px #888;}
+.pop_info .pop_title {padding: 5px 0 0 10px;height: 30px;background: #eee;border-bottom: 1px solid #ddd;font-size: 18px;font-weight: bold;}
+.pop_info .pop_close {position: absolute;top: 10px;right: 10px;color: #888;width: 17px;height: 17px;background: url('http://t1.daumcdn.net/localimg/localimages/07/mapapidoc/overlay_close.png');}
+.pop_info .pop_close:hover {cursor: pointer;}
+.pop_info .pop_body {position: relative;overflow: hidden;}
+.pop_info .pop_desc {position: relative;margin: 13px 0 0 90px;height: 75px;}
+.pop_desc .pop_roadaddress {overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
+.pop_desc .pop_detailaddress {font-size: 12px;color:black;margin-top: -2px;}
+.pop_info .pop_img {position: absolute;top: 6px;left: 5px;width: 73px;height: 71px;border: 1px solid #ddd;color: #888;overflow: hidden;}
+.pop_info:after {content: '';position: absolute;margin-left: -12px;left: 50%;bottom: 0;width: 22px;height: 12px;background: url('http://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png')}
+.pop_info .pop_link {text-decoration:none;color: #5085BB;}
+
+ 
+ #list_Title{font-family: 'Noto Sans KR', sans-serif;font-size:30px;font-weight:bold;}
+ #icon_loading{font-size:22px;}
+ #checkClick{color:red;font-size:14px;}
+#regionList{font-family: 'Nanum Gothic', sans-serif;width:100%;min-width:600px;margin:auto;border-collapse: collapse;}
+tr:nth-child(odd){background-color:rgba(199, 236, 238,0.5);}
+tr:nth-child(even){background-color:rgba(116, 185, 255,0.3)}
+th{width:5%;font-family: inherit;font-size: 25px;border-bottom:1px solid white;}
+td{border-left:1px solid white;border-bottom:1px solid white;}
+.house_pic{width:10%}
+.house_info{width:50%;font-family: inherit;padding-left: 10px;cursor: pointer;}
+.house_item{width: 25%;text-align: center;}
+.house_stars{width:10%;font-family: inherit;text-align: center;}
+.house_info_img{border:1px ridge #fab1a0;border-radius:5px;text-align:center;font-family: inherit;width:68px;margin-left:7px;display: inline-block;}
+.house_type{font-size:15px;color:#7f8c8d;}
+.house_gender{font-size:15px;color:#ff7675;}
+.house_name{font-size:20px;font-weight:bold;}
+.house_addr{font-size:16px;}
+
+
+html{scroll-behavior: smooth;}
+

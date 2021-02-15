@@ -1,0 +1,40 @@
+#btn_group button{
+font-family:Arial;font-weight:bold;
+font-size : 18px;
+border-style:outset;
+background-color: rgba(0,0,0,0);
+padding: 5px;}
+#btn_total{border-top-left-radius: 5px; border-bottom-left-radius: 5px; margin-right:-4px;}
+#btn_wating{cursor: pointer;border-top-right-radius: 5px; border-bottom-right-radius: 5px; margin-left:-3px; }
+
+table {
+	margin-top: 7px;
+	border-collapse: collapse;
+	font-family: 'Noto Sans KR', sans-serif;
+	font-size: 20px;
+	text-align: center;
+}
+
+td {
+	height: 50px;
+}
+
+tr {
+	border-bottom: 1px solid darkgrey;
+}
+
+tr:first-child {
+	border-bottom: 2px solid black;
+}
+
+tr:last-child {
+	text-align: right;
+	border-top: 2px solid black;
+	border-bottom: none;
+}
+
+.btn_result {
+	border: 1px dotted lightgrey;
+	border-radius: 5px;
+	background-color: rgba(149, 175, 192, 0.7);
+}

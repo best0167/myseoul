@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+    <!-- 쿼리문 작성 -->
+    <mapper namespace="m4">
+    	
+    	<!-- houseDetailProcess -->
+    	<select id="houseDetail" parameterType="int" resultType="dto.HouseDTO">
+    		SELECT * 
+    		FROM house
+    		WHERE h_num = #{h_num}
+    	</select>
+    	
+    	<!-- 집에 딸린 방 list 조회 -->
+    	<select id="roomList" parameterType="int" resultType="dto.RoomDTO">
+    		SELECT *
+    		FROM room
+    		WHERE r_hnum=#{h_num}
+    	</select>
+    	
+    	<!-- roomDetailProcess -->
+    	<select id="roomDetail" parameterType="int" resultType="dto.RoomDTO">
+    		SELECT * 
+    		FROM room
+    		WHERE r_num = #{r_num}
+    	</select>
+    	
+    	<!-- 방번호로 timetable 조회 -->
+    	<select id="timetable" parameterType="int" resultType="dto.TimetableDTO">
+    		SELECT * 
+    		FROM timetable
+    		WHERE t_rnum = #{r_num}
+    	</select>
+    	
+    	<!-- room테이블에 모든 레코드 r_tstate Yes로  업데이트하기 -->
+    	<update id="updateAllTstate">
+    		UPDATE room
+    		SET r_tstate = 'y'
+    	</update>
+    	
+    	<!-- room테이블에 r_tstate Yes로  업데이트하기 -->
+    	<update id="updateYesTstate" parameterType="int">
+    		UPDATE room
+    		SET r_tstate = 'y'
+    		WHERE r_num = #{r_num}
+    	</update>
+
+		<!-- room테이블에 r_tstate No로  업데이트하기 -->
+    	<update id="updateNoTstate" parameterType="int">
+    		UPDATE room
+    		SET r_tstate = 'n'
+    		WHERE r_num = #{r_num}
+    	</update>
+    	
+    	<!-- timetable에 예약된 최대 월 조회-->
+    	<select id="maxMonth" parameterType="int" resultType="int">
+    		SELECT max(extract(month from t_startdate)) as month
+			FROM timetable
+			WHERE t_rnum = #{r_num}
+    	</select>
+
+    	<!-- u_id로 users 테이블의 회원정보 조회 -->
+    	<select id="userInfo" parameterType="String" resultType="dto.UsersDTO">
+    		SELECT *
+    		FROM users
+    		WHERE u_id=#{u_id}
+    	</select>
+  
+  		<!-- b_hnum으로 집테이블에서 도로명주소, 상세주소, 판매자 아이디 select -->
+  		<select id="bagSelect" parameterType="int" resultType="dto.HouseDTO">
+  			SELECT h_roadaddr, h_detailaddr, h_uid
+  			FROM house
+  			WHERE h_num = #{b_hnum}
+  		</select>
+  		
+  		<!-- b_rnum으로 room테이블에서 방이름 가져와 -->
+  		<select id="bagRnameSelect" parameterType="int" resultType="dto.RoomDTO">
+  			SELECT r_name, r_price
+  			FROM room
+  			WHERE r_num = #{b_rnum}
+  		</select>
+  		
+  		<!-- BagDTO로 bag테이블에 insert -->
+  		<insert id="insertBag" parameterType="dto.BagDTO">
+  			INSERT INTO bag (b_num, b_uid, b_hnum, b_rnum, b_name, b_price, b_startdate, b_enddate, b_roadaddr, b_detailaddr, b_pid)
+  			VALUES ( bag_seq.nextval, #{b_uid}, #{b_hnum}, #{b_rnum}, #{b_name}, #{b_price}, #{b_startdate}, #{b_enddate}, #{b_roadaddr}, #{b_detailaddr}, #{b_pid})
+  		</insert>
+  		
+  		<!-- 로그인된 session 아이디로 bag테이블에 저장된 레코드를 dto로 가져오기 -->
+  		<select id="bagList" parameterType="String" resultType="dto.BagDTO">
+  			SELECT *
+  			FROM bag
+  			WHERE b_uid=#{b_uid}
+  		</select>
+  		
+  		<!-- 집 조회수 증가 -->
+  		<update id="addHouseCnt" parameterType="int">
+  			UPDATE house 
+    		SET h_readcnt = h_readcnt+1  
+    		WHERE h_num = #{h_num}
+  		</update>
+  		
+  		<!-- b_hnum(집번호)로 house테이블의 집 이름 가져오기 -->
+  		<select id="selBhname" parameterType="int" resultType="String">
+  		    SELECT h_name
+  		    FROM house
+  			WHERE h_num = #{b_hnum}
+  		</select>	
+  		
+  		<!-- b_num으로 마이페이지 장바구니 리스트 삭제 -->
+		<delete parameterType="int" id="deleteBag"> 
+			DELETE FROM bag WHERE b_num = #{b_num}
+		</delete>
+  		
+  		<!-- b_num으로 장바구니 조회 -->
+  		<select id="selectBagInfo" parameterType="int" resultType="dto.BagDTO">
+  			SELECT *
+  			FROM bag
+  			WHERE b_num=#{b_num}
+  		</select>
+  		
+  		<!-- 세션아이디, 방번호, 시작일로 bag 테이블에 저장되어 있는지 조회 -->
+  		<select id="checkBag" parameterType="dto.BagDTO" resultType="dto.BagDTO">
+  			SELECT *
+  			FROM bag
+  			WHERE b_uid=#{b_uid} and b_rnum=#{b_rnum} and b_startdate=#{b_startdate}
+  		</select>
+  		
+  		<!-- buyList 테이블에 인서트하기 -->
+  		<insert id="insertBuyList" parameterType="dto.BuyListDTO">
+  			INSERT INTO buylist (by_num, by_type, by_uid, by_pid, by_rnum, by_hnum, by_startdate, by_enddate, by_regdate, by_price, by_point, by_refund, by_totalprice)
+  			VALUES (buylist_seq.nextval, #{by_type}, #{by_uid}, #{by_pid}, #{by_rnum}, #{by_hnum}, #{by_startdate}, #{by_enddate}, sysdate, #{by_price}, #{by_point}, default, #{by_totalprice})
+  		</insert>
+  		
+  		<!-- 장바구니에 담긴거 결제하면 -> 결제 완료 후 장바구니에 담긴 내역 삭제 -->
+  		<!-- b_uid, b_rnum, b_startdate로 장바구니 조회해서 레코드가 있으면 삭제함 -->
+  		<delete id="deleteCheckBag" parameterType="dto.BagDTO">
+  			DELETE FROM bag
+  			WHERE b_uid=#{b_uid} and b_rnum=#{b_rnum} and b_startdate=#{b_startdate}
+  		</delete>
+  		
+  		<!-- users 테이블의 point update -->
+  		<update id="pointUpdate" parameterType="dto.UsersDTO">
+  			UPDATE users
+  			SET u_point = #{u_point}
+  			WHERE u_id = #{u_id}
+  		</update>
+  		
+  		<!-- buyList의 id, rnum, startdate 로 buyList 레코드 가져오기 -->
+  		<select id="selectBuyList" parameterType="dto.BuyListDTO" resultType="dto.BuyListDTO">
+  			SELECT *
+  			FROM buylist
+  			WHERE by_uid=#{by_uid} and by_rnum=#{by_rnum} and by_startdate=#{by_startdate}
+  		</select>
+  		
+  		<!-- timetable insert -->
+  		<insert id="timeInsert" parameterType="dto.TimetableDTO">
+  			INSERT INTO timetable (t_num, t_bynum, t_uid, t_hnum, t_rnum, t_startdate, t_enddate)
+  			VALUES (timetable_seq.nextval, #{t_bynum}, #{t_uid}, #{t_hnum}, #{t_rnum}, #{t_startdate}, #{t_enddate})
+  		</insert> 		
+  		
+  		<!-- by_uid(세션아이디)로 buylist 조회하기 -->
+  		<select id="BuyList" parameterType="String" resultType="dto.BuyListDTO">
+  			SELECT *
+  			FROM buylist
+  			WHERE by_uid=#{by_uid} and by_refund='n'
+  			order by by_regdate
+  		</select>
+  		
+  		<!-- 해당 방에  사진이 몇개있니?-->
+  		<select id="cntRoomPic" parameterType="int" resultType="int">
+  			SELECT count(*) 
+  			FROM roompics 
+  			WHERE rp_rnum = #{rp_rnum} 
+  		</select>
+  		
+  		<!-- 방사진 rownum으로 하나씩 불러옵니다 -->
+  		<select id="callRoomDir" parameterType="hashmap" resultType="String">
+  			SELECT rp_dir 
+  			FROM (SELECT rownum as callnum,rp_dir 
+  				      FROM roompics 
+  				      WHERE rp_rnum = #{rnum}) 
+  			WHERE callnum=#{call} 
+  		</select>
+  		
+  		<!-- 0316  -->
+  		<!-- 결제번호로 buylist의 결과 조회 -->
+  		<select id="num_buylist" parameterType="int" resultType="dto.BuyListDTO">
+  			SELECT *
+  			FROM buylist
+  			WHERE by_num=#{by_num}
+  		</select>
+  		
+  		<!-- r_num으로 방이름 조회 -->
+  		<select id="selectRname" parameterType="int" resultType="String">
+  			SELECT r_name
+  			FROM room
+  			WHERE r_num = #{r_num}
+  		</select>
+  		
+  		<!-- 리뷰테이블에 insert -->
+  		<insert id="insertReview" parameterType="dto.ReviewDTO">
+  			INSERT INTO review (rv_num, rv_bynum, rv_uid, rv_hnum, rv_contents, rv_regdate, rv_picture, rv_star, rv_rnum)
+  			VALUES (review_seq.nextval, #{rv_bynum}, #{rv_uid}, #{rv_hnum}, #{rv_contents}, sysdate, #{rv_picture, jdbcType=VARCHAR}, #{rv_star}, #{rv_rnum})
+  		</insert>
+  		
+  		<!-- h_num으로 리뷰테이블에서 리스트로 조회 -->
+  		<select id="select_hnum_review" parameterType="int" resultType="dto.ReviewDTO">
+  			SELECT *
+  			FROM review
+  			WHERE rv_hnum=#{h_num}
+  			order by rv_regdate
+  		</select>
+  		
+  		<!-- 별점-->
+  		<select id="star_count" parameterType="dto.HouseDTO" resultType="int">
+  			SELECT count(*)
+  			FROM review
+  			WHERE rv_hnum=#{h_num} and rv_star=#{rv_star}
+  		</select>
+  		
+  		<!-- 0318 -->
+  		<!-- 아이디,집번호,방번호로 리뷰작성한 적이 있는지 조회 -->
+  		<select id="checkReview" parameterType="dto.ReviewDTO" resultType="int">
+  			SELECT count(*)
+  			FROM review
+  			WHERE rv_uid=#{rv_uid} and rv_hnum=#{rv_hnum} and rv_rnum=#{rv_rnum}
+  		</select>
+  		
+  		<!-- u_point update -->
+  		<update id="rv_pointUpdate" parameterType="dto.UsersDTO">
+  			UPDATE users
+  			SET u_point = #{u_point} + 10000
+  			WHERE u_id=#{u_id}
+  		</update>
+     
+     	<!-- refund테이블 insert -->
+     	<insert id="insertRefund" parameterType="dto.RefundDTO">
+     		INSERT INTO refund(rf_num, rf_type, rf_bynum, rf_uid, rf_hnum, rf_rnum, rf_contents, rf_price, rf_point, rf_prog, rf_regdate,rf_pid)
+     		VALUES (refund_seq.nextval, #{rf_type}, #{rf_bynum}, #{rf_uid}, #{rf_hnum}, #{rf_rnum}, #{rf_contents}, #{rf_price}, #{rf_point}, 'i', sysdate, #{rf_pid})
+     	</insert>
+     	
+     	<!-- 판매자아이디로 환불테이블에서 조회 -->
+     	<select id="selectRefundList" parameterType="string" resultType="dto.RefundDTO">
+     		SELECT *
+     		FROM refund
+     		WHERE rf_pid=#{rf_pid}
+     	</select>
+     	
+     	<!-- buylist테이블의 by_refund 'i' update -->
+  		<update id="updateByRefund1" parameterType="int">
+  			UPDATE buylist
+  			SET by_refund='i'
+  			WHERE by_num=#{rf_bynum}
+  		</update>
+  		
+  		<!-- refund테이블의 rf_prog 'y' update -->
+  		<update id="updateRfProg1" parameterType="int">
+  			UPDATE refund
+  			SET rf_prog='y', rf_cdate=sysdate 
+  			WHERE rf_num = #{rf_num}
+  		</update>
+  		 		
+  		<!-- rf_num으로 refund 테이블 조회 -->
+  		<select id="selectRefund" parameterType="int" resultType="dto.RefundDTO">
+  			SELECT *
+  			FROM refund
+  			WHERE rf_num = #{rf_num}
+  		</select>
+  		
+  		<!-- buylist테이블의 by_refund 'y' update -->
+  		<update id="updateByRefund2" parameterType="int">
+  			UPDATE buylist
+  			SET by_refund='y'
+  			WHERE by_num=#{rf_bynum}
+  		</update>
+  		
+  		<!-- r_num으로 timetable에 있는 예약된 방 삭제 -->
+  		<delete id="deleteTimetable" parameterType="int">
+  			DELETE FROM timetable
+  			WHERE t_rnum = #{r_num}
+  		</delete>
+  		
+  		<!-- u_id users테이블에서 u_point 조회 -->
+  		<select id="selectUPoint" parameterType="string" resultType="int">
+  			SELECT u_point
+  			FROM users
+  			WHERE u_id = #{u_id}
+  		</select>
+  		
+  		<!-- rf_point를 users테이블에 업데이트 -->
+  		<update id="rfPointUpdate" parameterType="dto.UsersDTO">
+  			UPDATE users
+  			SET u_point = #{u_point} + #{rf_point}
+  			WHERE u_id=#{u_id}
+  		</update>
+  		
+  		<!-- by_num으로 refund테이블의 rf_cdate 가져오기 -->
+  		<select id="selectRfCdate" parameterType="int" resultType="date">
+  			SELECT rf_cdate
+  			FROM refund
+  			WHERE rf_bynum = #{by_num}
+  		</select>
+  		
+  		<!-- by_num buylist 삭제 -->
+  		<delete id="deleteBuylist" parameterType="int">
+  			DELETE FROM buylist
+  			WHERE by_num = #{by_num} and by_refund='y'
+  		</delete>		
+  		
+  		<!-- refund 테이블에서 u_id, rf_prog 'y' 조회  -->
+  		<select id="selectUidRefund" parameterType="String" resultType="dto.RefundDTO">
+  			SELECT *
+  			FROM refund
+  			WHERE rf_uid=#{rf_uid}
+  		</select>
+  		
+  		<!-- 환불거부 -->
+  		<update id="rejectRefund" parameterType="int">
+  			UPDATE refund
+  			SET rf_prog = 'r', rf_cdate=sysdate
+  			WHERE rf_num = #{rf_num}
+  		</update>
+  		
+  		<!-- buylist테이블의 by_refund 'n' update -->
+  		<update id="updateByRefund3" parameterType="int">
+  			UPDATE buylist
+  			SET by_refund='n'
+  			WHERE by_num=#{rf_bynum}
+  		</update>
+  		
+  		<!-- 0323 환불승인한 구매번호로 작성된 리뷰가 있는지 확인 -->
+  		<select id="checkRefundReview" parameterType="int" resultType="int">
+  			SELECT count(*)
+  			FROM review
+  			WHERE rv_bynum = #{rf_bynum}
+  		</select>
+  		
+  		<!-- 0323 환불승인시 리뷰삭제 -->
+  		<!-- rf_bynum, rf_prog='y' -->
+  		<delete id="refundDeleteReview" parameterType="int">
+  			DELETE FROM review
+  			WHERE rv_bynum = #{rf_bynum}
+  		</delete>
+  		
+    </mapper>
